@@ -1,29 +1,34 @@
-import js from '@eslint/js'
 import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import { defineConfig, globalIgnores } from 'eslint/config'
+import js from '@eslint/js'
+import stylisticJs from '@stylistic/eslint-plugin'
+import prettier from 'eslint-config-prettier'
 
-export default defineConfig([
-  globalIgnores(['dist']),
+export default [
+  js.configs.recommended,
+  prettier,
   {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-    ],
+    files: ['**/*.test.{js,jsx}'],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
-      },
+      sourceType: 'module',
+      globals: { ...globals.vitest },
+      ecmaVersion: 'latest',
+    },
+    plugins: {
+      '@stylistic/js': stylisticJs,
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      '@stylistic/js/indent': ['error', 2],
+      '@stylistic/js/linebreak-style': ['error', 'unix'],
+      '@stylistic/js/quotes': ['error', 'single'],
+      '@stylistic/js/semi': ['error', 'never'],
+      eqeqeq: 'error',
+      'no-trailing-spaces': 'error',
+      'object-curly-spacing': ['error', 'always'],
+      'arrow-spacing': ['error', { before: true, after: true }],
+      'no-console': 'off',
     },
   },
-])
+  {
+    ignores: ['dist/**'],
+  },
+]
